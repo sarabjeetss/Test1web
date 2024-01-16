@@ -1,0 +1,247 @@
+<!DOCTYPE html> // SARABJEET SINGH 22049221
+<html>
+<head>
+  <style>
+    table {
+      text-align:center;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular',
+                   'Lucida Grande', 'Lucida Sans Unicode',
+                    Geneva, Verdana, sans-serif;
+    }
+    input, button {
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular',
+                   'Lucida Grande', 'Lucida Sans Unicode',
+                    Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div align="center">
+    <h1>Grade Calculator</h1>  
+
+    <button onclick="addActivity()" id="addActivity">
+      Add Activity
+    </button>
+
+    <label for="activity">Activity</label>
+    <input type="text" id="activity" size="3">
+
+    <label for="Weight">Weight</label>
+    <input type="text" id="Weight" size="3"><br>    
+
+    <button onclick="addGrade()" id="addGrade">
+      Add Grade
+    </button>
+
+    <label for="grade">Grade</label>
+    <input type="text" id="grade" size="3">
+
+    <label for="activityNo">Activity no</label>
+    <input type="text" id="activityNo" size="3"><br>        
+
+    <button onclick="deleteActivityPrompt()" id="deleteActivityPrompt">
+      Delete Activity Prompt
+    </button>
+
+    <button onclick="addNewActivity()" id="addNewActivity">
+      Add New Activity
+    </button>
+
+    <button onclick="editActivity()" id="editActivity">
+      Edit Activity
+    </button>
+
+    <table border="2" id="theTable" style="width:70%">
+      <tr>
+        <th>No</th>
+        <th>Activity</th>
+        <th>Weight</th>
+        <th>Grade</th>
+      </tr>  
+      <tr>
+        <td>1</td>
+        <td>Lab1</td>
+        <td>10</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Lab2</td>
+        <td>20</td>
+        <td></td>
+      </tr>
+    </table>
+    <p id="ERR" style="color:red;">Error Message: </p>
+
+    <script>
+      let noActivity = 2;
+      let totalWeight = 100;
+      let totalGrade = 0;
+      let ERR = document.getElementById("ERR");
+
+      function addActivity() {
+        let activityInput = document.getElementById("activity");
+        let weightInput = document.getElementById("Weight");
+
+        let activity = activityInput.value.trim();
+        let weight = parseInt(weightInput.value);
+
+        if (activity === "") {
+          ERR.innerHTML = "Error Message: Activity name is rejected.";
+          return;
+        }
+
+        if (isNaN(weight) || weight > 100 || weight < 1) {
+          ERR.innerHTML = "Error Message: Weight is rejected.";
+          return;
+        }
+
+        ERR.innerHTML = ""; // Clear error message
+
+        // Add new row to the table
+        let table = document.getElementById("theTable");
+        let newRow = table.insertRow(-1);
+        let cell1 = newRow.insertCell(0);
+        let cell2 = newRow.insertCell(1);
+        let cell3 = newRow.insertCell(2);
+        let cell4 = newRow.insertCell(3);
+        cell1.innerHTML = ++noActivity;
+        cell2.innerHTML = activity;
+        cell3.innerHTML = weight;
+        cell4.innerHTML = ""; 
+
+        // Update totalWeight
+        totalWeight += weight;
+
+        // Clear input fields
+        activityInput.value = "";
+        weightInput.value = "";
+      }
+
+      function addGrade() {
+        let gradeInput = document.getElementById("grade");
+        let activityNoInput = document.getElementById("activityNo");
+
+        let grade = parseInt(gradeInput.value);
+        let activityNo = parseInt(activityNoInput.value);
+
+        if (isNaN(grade) || grade > 100 || grade < 0) {
+          ERR.innerHTML = "Error Message: Grade is rejected.";
+          return;
+        }
+
+        if (activityNo < 1 || activityNo > noActivity) {
+          ERR.innerHTML = "Error Message: Activity No is rejected.";
+          return;
+        }
+
+        ERR.innerHTML = ""; 
+
+        // Update the grade in the corresponding row
+        let table = document.getElementById("theTable");
+        let row = table.rows[activityNo];
+        row.cells[3].innerHTML = grade;
+
+        // Update totalGrade
+        totalGrade += grade;
+
+        // Clear input fields
+        gradeInput.value = "";
+        activityNoInput.value = "";
+      }
+
+      function addNewActivity() {
+        // Add a new row with default values
+        let table = document.getElementById("theTable");
+        let newRow = table.insertRow(-1);
+        let cell1 = newRow.insertCell(0);
+        let cell2 = newRow.insertCell(1);
+        let cell3 = newRow.insertCell(2);
+        let cell4 = newRow.insertCell(3);
+
+        // Increment the activity count
+        noActivity++;
+
+        // Populate cells with default values or leave them empty
+        cell1.innerHTML = noActivity;
+        cell2.innerHTML = "New Activity";
+        cell3.innerHTML = "";  
+        cell4.innerHTML = "";
+
+        ERR.innerHTML = ""; 
+      }
+
+      function editActivity() {
+        let activityNoInput = prompt("Enter the activity number to edit:");
+        let newActivityName = prompt("Enter the new activity name:");
+
+        let activityNo = parseInt(activityNoInput);
+
+        if (activityNo < 1 || activityNo > noActivity || isNaN(activityNo)) {
+          ERR.innerHTML = "Error Message: Invalid activity number.";
+          return;
+        }
+
+        if (newActivityName.trim() === "") {
+          ERR.innerHTML = "Error Message: New activity name is rejected.";
+          return;
+        }
+
+        ERR.innerHTML = ""; 
+
+        // Update the activity name in the corresponding row
+        let table = document.getElementById("theTable");
+        let row = table.rows[activityNo];
+        row.cells[1].innerHTML = newActivityName;
+      }
+
+      function deleteActivityPrompt() {
+        let activityNoInput = prompt("Enter the activity number to delete:");
+
+        let activityNo = parseInt(activityNoInput);
+
+        if (activityNo < 1 || activityNo > noActivity || isNaN(activityNo)) {
+          ERR.innerHTML = "Error Message: Invalid activity number.";
+          return;
+        }
+
+        ERR.innerHTML = ""; 
+
+        // Delete the corresponding row
+        let table = document.getElementById("theTable");
+        table.deleteRow(activityNo);
+
+        // Decrement the activity count
+        noActivity--;
+
+        // Recalculate totalWeight and totalGrade
+        calculateTotals();
+      }
+
+      function calculateTotals() {
+        totalWeight = 0;
+        totalGrade = 0;
+
+        let table = document.getElementById("theTable");
+
+        for (let i = 1; i <= noActivity; i++) {
+          let row = table.rows[i];
+          let weight = parseInt(row.cells[2].innerHTML);
+          let grade = parseInt(row.cells[3].innerHTML);
+
+          totalWeight += weight;
+          totalGrade += grade;
+        }
+      }
+    </script>
+  </div>
+</body>
+</html>
